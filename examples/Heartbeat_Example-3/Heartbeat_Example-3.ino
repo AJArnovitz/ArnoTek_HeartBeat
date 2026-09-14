@@ -1,13 +1,16 @@
-  
-//*****************************************************
+//******************************************************************
 //
-//     H e a r t B e a t   D e m o   3  
+//     A r n o T e k   H e a r t B e a t   E x a m p l e   3  
 //
 //        Toggle default pin 13 every half second
 //        Toggle pin 12 evry 90 seconds
 //        Call user defined function every 90 seconds
 //
-//******************************************************
+//------------------------------------------------------------------
+//
+//  Copyright 2026 Anthony J. Arnovitz  All rights reserved.
+//
+//******************************************************************
 
 
 

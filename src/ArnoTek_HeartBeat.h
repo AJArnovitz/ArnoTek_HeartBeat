@@ -2,7 +2,7 @@
 //                                                                                          *
 //                                A r n o T e k _ H e a r t B e a t                         *
 //                                                                                          *
-//                   Copyright Anthony J. Arnovitz 2023    All rights reserved.             *
+//                   Copyright 2026 Anthony J. Arnovitz     All rights reserved.            *
 //                                                                                          *
 //------------------------------------------------------------------------------------------*
 //                                                                                          *

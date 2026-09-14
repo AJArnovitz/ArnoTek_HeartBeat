@@ -1,14 +1,17 @@
-
-//*********************************************************
+//******************************************************************
 //
-//     H e a r t B e a t   D e m o   5  
+//     A r n o T e k   H e a r t B e a t   E x a m p l e   4  
 //
 //        Toggle default pin 13 every half second
 //        Toggle pin 12 evry 90 seconds
-//        Call user defined function once after 90 seconds
+//        Call user defined function every 90 seconds
 //        Call user defined function every 5 minutes
 //
-//*********************************************************
+//------------------------------------------------------------------
+//
+//  Copyright 2026 Anthony J. Arnovitz  All rights reserved.
+//
+//******************************************************************
 
 
 
@@ -53,8 +56,8 @@ void loop()
 {
   HeartBeat.Toggle();     // Toggle the heartbeat LED (if it is time)    
   Pin12_signal.Toggle();  // Toggle the heartbeat timer (if it is time)  
-  Seconds90.Toggle();     // Call the user defined function "My90SecFunction" evry 90 seconds
-  Minutes5.Toggle();      // Call the user defined function "My5MinFunction" evry 5 minutes
+  Seconds90.Toggle();     // Call ther user defined function "My90SecFunction" evry 90 seconds
+  Minutes5.Toggle();      // Call ther user defined function "My5MinFunction" evry 5 minutes
 
 }
 
@@ -65,10 +68,6 @@ void My90SecFunction(long unsigned myCurrentTime)
 {
   Serial.print("My90SecFunction entered - current timer value: ");
   Serial.println(myCurrentTime);
-
-  Seconds90.Callback(nullptr); 	  // Disable callback
-  Seconds90.Delay(4294967000);	  // Set the timer delay to a very high number
-
 }
 
 void My5MinFunction(long unsigned myCurrentTime)
