@@ -41,8 +41,4 @@ void loop()
 {
   // Toggle the heartbeat LED (if it is time)
   HeartBeat.Toggle();     // Toggle the heartbeat LED (if it is time)
-
-
-
-
 }
