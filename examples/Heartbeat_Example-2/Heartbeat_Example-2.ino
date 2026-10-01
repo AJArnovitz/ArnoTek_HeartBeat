@@ -3,7 +3,7 @@
 //     A r n o T e k   H e a r t B e a t   E x a m p l e   2  
 //
 //        Toggle default pin 13 every half second
-//        Toggle pin 12 evry 90 seconds
+//        Toggle pin 12 every 90 seconds
 //
 //------------------------------------------------------------------
 //

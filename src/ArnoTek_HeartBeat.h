@@ -33,7 +33,7 @@
 //     2. Add "#include <ArnoTek_HeartBeat.h>" to your source code                          *
 //     3. Define heartbeat object before the setup routine                                  *
 //     4. Call the "Init" method of the heartbeat object in the setup routine to set the    *
-//        values.  (Note - maybe exclude if values were specified at object definition.)    *
+//        values.  (Note - maybe excluded if values were specified at object definition.)   *
 //     5. Call the "Toggle" method of the heartbeat object in the loop routine to toggle    * 
 //        the heartbeat and/or invoke a specified callback function.                        *
 //                                                                                          *
@@ -270,7 +270,7 @@ class ArnoTek_HeartBeat
     //             curTime - current value of the Arduino millisecond time
     //                 pin - the digital pin that is used to output the heartbeat signal
     //                       NOTE: If set to 0, no pin is toggled.
-    //             delay - number of miliseconds between toggling of the output signal
+    //               delay - number of miliseconds between toggling of the output signal
     //*************************************************************************************
 
     Init(long unsigned curTime, long unsigned delay, int pin)
@@ -320,9 +320,9 @@ class ArnoTek_HeartBeat
       myDelay    = delay;
       myPin      = pin;
       myCallback = callback;
-      Value    = false;
+      Value      = false;
 
-      // If there is an utput pin to toggle, configure the pin for the heartbeat and set its initial signal
+      // If there is an output pin to toggle, configure the pin for the heartbeat and set its initial signal
       if(myPin != 0)
       {
         pinMode(myPin, OUTPUT);
@@ -434,7 +434,7 @@ class ArnoTek_HeartBeat
         if(myPin != 0)
         {
           // Yes - toggle the output pin
-	        Value          = !Value;         // Toggle the heartbeat
+	        Value = !Value;                  // Toggle the heartbeat
           digitalWrite(myPin, Value);      // output the new heartbeat state
         }
 

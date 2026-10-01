@@ -3,7 +3,7 @@
 //     A r n o T e k   H e a r t B e a t   E x a m p l e   3  
 //
 //        Toggle default pin 13 every half second
-//        Toggle pin 12 evry 90 seconds
+//        Toggle pin 12 every 90 seconds
 //        Call user defined function every 90 seconds
 //
 //------------------------------------------------------------------
@@ -51,7 +51,7 @@ void loop()
 {
   HeartBeat.Toggle();     // Toggle the heartbeat LED (if it is time)    
   Pin12_signal.Toggle();  // Toggle pin 12 (if it is time) 
-  Seconds90.Toggle();     // Call ther user defined function "My90SecFunction" evry 90 seconds
+  Seconds90.Toggle();     // Call the user defined function "My90SecFunction" every 90 seconds
 
 }
 
