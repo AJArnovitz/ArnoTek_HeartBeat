@@ -42,17 +42,15 @@
 //        .                                                                                 *
 //        .                                                                                 *
 //        .                                                                                 *
-//    const int HeartBeatPin             = 13;     // Define the putput pin                 *
-//    const long unsigned HeartBeatDelay = 500;    // Define delay value in milliseconds    *
-//    ArnoTek_HeartBeat HeartBeat;                 // Define heartbeat object               *
+//         Define heartbeat object using default values                                     *
+//    ArnoTek_HeartBeat HeartBeat;   // Uses default pin 13 and 500 ms                      *
 //                                                                                          *
 //                      - - - O R   - - -                                                   *
 //                                                                                          *
-//         Define heartbeat object with a timer value of 500 milliseconds and use the       *
+//         Define heartbeat object with a timer value of 250 milliseconds and use the       *
 //         default output pin (13)                                                          *
 //                                                                                          *
-//    ArnoTek_HeartBeat HeartBeat(static_cast<long unsigned>(500));     // No need to init  *
-//                                                                         in setup()       *
+//    ArnoTek_HeartBeat HeartBeat((long unsigned)250);     // No need to init in setup()    *
 //                                                                                          *
 //        .                                                                                 *
 //        .                                                                                 *
@@ -62,6 +60,8 @@
 //          NOTE: Call to "Init" is not needed if values are specified when the Heartbeat   *
 //                object was defined.                                                       *
 //                                                                                          *
+//       const int HeartBeatPin   = 13;     // Define the output pin                        *
+//       const int HeartBeatDelay = 750;    // Define delay                                 *
 //       HeartBeat.Init(HeartBeatDelay, HeartBeatPin);   // Initialize the heartbeat object *
 //           .                                                                              *
 //           .                                                                              *
@@ -84,7 +84,7 @@
 //    }                                                                                     *
 //                                                                                          *
 //                                                                                          *
-//    void myCallback(long unsigned myCurrentTime)                                          *
+//    void myCallback(ArnoTek_HeartBeat *myObject, long unsigned myCurrentTime)             *
 //    {                                                                                     *
 //       Serial.print("Timer value: ");                                                     *
 //       Serial.println(myCurrentTime);                                                     *
@@ -100,27 +100,37 @@ class ArnoTek_HeartBeat
 {
   private:
     bool          Value;                            // current value of the heartbeat signal
-    int           myPin      = 0;                   // pin that is used for the heartbeat signal
-    const int     defaultPin = 13;                  // define default output pin
+    int           myPin           = 0;              // pin that is used for the heartbeat signal
+    const int     defaultPin      = 13;             // define default output pin
+    const int     defaultDelay    = 500;            // define default delay (in milliseconds)
+
+    // User Save Values - these values are for use by the user in the callback function. The initial values should be 
+    //                    set in the SetUp function and they be modified as desired by the user.   They are not used
+    //                    or modified by this class. (Each instantiated object has its own set of values.)
+    long unsigned userSaveValue1  = 0;              // For use by the user to save a value in the object (value 1)
+    long unsigned userSaveValue2  = 0;              // For use by the user to save a value in the object (value 2)
+    long unsigned userSaveValue3  = 0;              // For use by the user to save a value in the object (value 3)
+
+
+    long unsigned myDelay         = 429496700;      // delay (in milliseconds) between heartbeat signal toggles
     long unsigned myExpirationTime;                 // value for when the timeout last expired
-    long unsigned myDelay = 429496700;              // delay (in milliseconds) between heartbeat signal toggles
-    void          (*myCallback)(long unsigned ct) = nullptr;  // Pointer to callback routine for when timer expires
+    void          (*myCallback)(ArnoTek_HeartBeat *mePtr, long unsigned ct) = nullptr;  // Pointer to callback routine for when timer expires
 
 
   public:  
 
     //*************************************************************************************
-    // CONSTRUCTOR - No paramaters specified.
+    // CONSTRUCTOR - No paramaters specified. Defaults to a 500 ms delay and default pin 13
     //-------------------------------------------------------------------------------------
     // Parameters:
     //             {NONE}
     //
-    //             NOTE - If this constructor is used, an Init method must be called in
-    //                    the setup routine to initialize control variables.
     //*************************************************************************************
 
     ArnoTek_HeartBeat()
-    {}
+    {
+      Init(millis(), defaultDelay, defaultPin, nullptr); 
+    }
 
 
     //*************************************************************************************
@@ -165,19 +175,6 @@ class ArnoTek_HeartBeat
     }
 
 
-    //*************************************************************************************
-    // CONSTRUCTOR - Specify timer delay and address of callback function
-    //-------------------------------------------------------------------------------------
-    // Parameters:
-    //             delay - number of miliseconds between toggling of the output signal
-    //          callback - address of the routine to call when the timer expires
-    //*************************************************************************************
-
-    ArnoTek_HeartBeat(long unsigned delay, void(*callback)(long unsigned ct))
-    {
-    	Init(millis(), delay, 0, callback);        // Go initialize the heartbeat object
-    }
-
 
     //=====================================================================================
 
@@ -207,22 +204,6 @@ class ArnoTek_HeartBeat
     Init(long unsigned delay, int pin)
     {
     	Init(millis(), delay, pin, nullptr);        // Go initialize the heartbeat object
-    }
-	
-
-    //*************************************************************************************
-    // Initalize the heartbeat control object using an internal timer value and a
-    // callabck function
-    //-------------------------------------------------------------------------------------
-    // Parameters:
-    //             delay - number of miliseconds between toggling of the output signal
-    //          callback - address of the routine to call when the timer expires
-    //                     NOTE: If set to nullptr, no callback function is called.
-    //*************************************************************************************
-
-    Init(long unsigned delay, void(*callback)(long unsigned ct))
-    {
-    	Init(millis(), delay, 0, callback);        // Go initialize the heartbeat object
     }
 	
 
@@ -279,26 +260,6 @@ class ArnoTek_HeartBeat
     }
 
 
-    //*************************************************************************************
-    // Initalize the heartbeat control object using a specified timer valuea and a
-    // callback function
-    //-------------------------------------------------------------------------------------
-    // Parameters:
-    //             curTime - current value of the Arduino millisecond time
-    //               delay - number of miliseconds between toggling of the output signal
-    //                       NOTE: This passed in parameter value MUST be defined as a long 
-    //                             unsigned value.  If a literal value, such as 2000 is
-    //                             specified, the value will be treated as an "int" which 
-    //                             will call a different Init function because the value 
-    //                             will be interpreted as an integer pin value.
-    //            callback - address of the routine to call when the timer expires
-    //                       NOTE: If set to nullptr, no callback function is called.
-    //*************************************************************************************
-
-    Init(long unsigned curTime, long unsigned delay, void(*callback)(long unsigned ct))
-    {
-    	Init(curTime, delay, 0, callback);        // Go initialize the heartbeat object
-    }
 
 
     //*************************************************************************************
@@ -317,10 +278,11 @@ class ArnoTek_HeartBeat
     Init(long unsigned curTime, long unsigned delay, int pin, void(*callback)(long unsigned ct))
     {
       // Save the initial values
-      myDelay    = delay;
-      myPin      = pin;
-      myCallback = callback;
-      Value      = false;
+      myExpirationTime  = curTime;
+      myDelay           = delay;
+      myPin             = pin;
+      myCallback        = callback;
+      Value             = false;
 
       // If there is an output pin to toggle, configure the pin for the heartbeat and set its initial signal
       if(myPin != 0)
@@ -329,8 +291,6 @@ class ArnoTek_HeartBeat
         digitalWrite(myPin, Value);
       }
 
-      // Save the current time
-      myExpirationTime = curTime;
     }
 
 
@@ -383,6 +343,106 @@ class ArnoTek_HeartBeat
 
 
     //*************************************************************************************
+    // Returns the value previously saved by the user (value 1)
+    //-------------------------------------------------------------------------------------
+    // Parameters:
+    //               NONE
+    //
+    // Returns:
+    //               Value previously saved by the user.  Returns 0 if no value was
+    //               previously saved.
+    //*************************************************************************************
+
+    long unsigned UserSaveValue1()
+    {
+      return userSaveValue1;
+    }
+
+
+
+    //*************************************************************************************
+    // Returns the value previously saved by the user (value 2)
+    //-------------------------------------------------------------------------------------
+    // Parameters:
+    //               NONE
+    //
+    // Returns:
+    //               Value previously saved by the user.  Returns 0 if no value was
+    //               previously saved.
+    //*************************************************************************************
+
+    long unsigned UserSaveValue2()
+    {
+      return userSaveValue2;
+    }
+
+
+
+    //*************************************************************************************
+    // Returns the value previously saved by the user (value 3)
+    //-------------------------------------------------------------------------------------
+    // Parameters:
+    //               NONE
+    //
+    // Returns:
+    //               Value previously saved by the user.  Returns 0 if no value was
+    //               previously saved.
+    //*************************************************************************************
+
+    long unsigned UserSaveValue3()
+    {
+      return userSaveValue3;
+    }
+
+
+
+    //*************************************************************************************
+    // Updates the user value in the object (value 1)
+    //-------------------------------------------------------------------------------------
+    // Parameters:
+    //               User value to save in the instantiated object for later use
+    //
+    //*************************************************************************************
+    
+    void UserSaveValue1(unsigned long UserValue)
+    {
+      userSaveValue1 = UserValue;
+    }
+
+
+
+    //*************************************************************************************
+    // Updates the user value in the object (value 2)
+    //-------------------------------------------------------------------------------------
+    // Parameters:
+    //               User value to save in the instantiated object for later use
+    //
+    //*************************************************************************************
+    
+    void UserSaveValue2(unsigned long UserValue)
+    {
+      userSaveValue2 = UserValue;
+    }
+
+
+
+
+    //*************************************************************************************
+    // Updates the user value in the object (value )
+    //-------------------------------------------------------------------------------------
+    // Parameters:
+    //               User value to save in the instantiated object for later use
+    //
+    //*************************************************************************************
+    
+    void UserSaveValue3(unsigned long UserValue)
+    {
+      userSaveValue3 = UserValue;
+    }
+
+
+
+    //*************************************************************************************
     // Update the address of the callback function that is called when the timer delay
     // expires.
     //-------------------------------------------------------------------------------------
@@ -395,6 +455,8 @@ class ArnoTek_HeartBeat
     {
       myCallback = callback;
     }
+
+
 
 
     //=====================================================================================
@@ -412,6 +474,7 @@ class ArnoTek_HeartBeat
     {
 	    Toggle(millis());        // Go toggle the heartbeat when appropriate
     }
+
 
 
     //*************************************************************************************
@@ -438,10 +501,10 @@ class ArnoTek_HeartBeat
           digitalWrite(myPin, Value);      // output the new heartbeat state
         }
 
-        // If a callback function was defined, call it with the current timer value
+        // If a callback function was defined, call it with the current timer value and the address of *** this *** instantiated object
         if(myCallback)
         {
-          myCallback(curTime);             // Call the user's specified callback function
+          myCallback(this, curTime);  // Call the user's specified callback function
         }
       }
    }

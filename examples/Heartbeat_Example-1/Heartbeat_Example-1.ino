@@ -2,7 +2,7 @@
 //
 //     A r n o T e k   H e a r t B e a t   E x a m p l e   1  
 //
-//        Toggle default pin 13 every half second
+//        Toggle default pin 13 every quarter of a second
 //
 //------------------------------------------------------------------
 //
@@ -16,8 +16,8 @@
 #include <ArnoTek_HeartBeat.h>
 
 
-// Instantiate an object for toggling pin 13 every half a second
-ArnoTek_HeartBeat HeartBeat(static_cast<long unsigned>(500)); 
+// Instantiate an object for toggling pin 13 every quarter of a second
+ArnoTek_HeartBeat HeartBeat((long unsigned)250); 
 
 
 
@@ -41,4 +41,5 @@ void loop()
 {
   // Toggle the heartbeat LED (if it is time)
   HeartBeat.Toggle();     // Toggle the heartbeat LED (if it is time)
+
 }

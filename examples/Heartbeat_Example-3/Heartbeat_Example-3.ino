@@ -3,7 +3,7 @@
 //     A r n o T e k   H e a r t B e a t   E x a m p l e   3  
 //
 //        Toggle default pin 13 every half second
-//        Toggle pin 12 every 90 seconds
+//        Toggle pin 12 every minute
 //        Call user defined function every 90 seconds
 //
 //------------------------------------------------------------------
@@ -17,19 +17,16 @@
 // Include the HearBeat class library
 #include <ArnoTek_HeartBeat.h>
 
-// Declare function definitions
-void My90SecFunction(long unsigned myCurrentTime);
 
-
-
-// Instantiate an object for toggling pin 13 every half a second
-ArnoTek_HeartBeat HeartBeat(static_cast<long unsigned>(500));
+// Instantiate an object for toggling pin 13 every half a second (the defaults)
+ArnoTek_HeartBeat HeartBeat;
 
 // Instantiate an object for toggling pin 12 every minute
-ArnoTek_HeartBeat Pin12_signal(static_cast<long unsigned>(60000), 12); 
+ArnoTek_HeartBeat Pin12_signal((long unsigned)60000, 12); 
 
 // Instantiate an object for calling user defined function every 90 seconds
-ArnoTek_HeartBeat Seconds90(static_cast<long unsigned>(90000), &My90SecFunction);
+// Note that specifying 0 as the pin to toggle indicates that no pin is to be toggled
+ArnoTek_HeartBeat Seconds90((long unsigned)90000, 0, &My90SecFunction);
 
 
 
@@ -39,7 +36,6 @@ void setup()
   delay(4000);
   Serial.begin(115200);
   Serial.println("\n\n*** Setup begin ***\n");
-
 
 
   Serial.println("*** Setup complete ***\n");
@@ -58,7 +54,7 @@ void loop()
 
 //                  * * *   C a l l b a c k   F u n c t i o n s   * * *
 
-void My90SecFunction(long unsigned myCurrentTime)
+void My90SecFunction(ArnoTek_HeartBeat *myObject, long unsigned myCurrentTime)
 {
   Serial.print("My90SecFunction entered - current timer value: ");
   Serial.println(myCurrentTime);

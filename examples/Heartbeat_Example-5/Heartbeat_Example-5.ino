@@ -3,7 +3,7 @@
 //     A r n o T e k   H e a r t B e a t   E x a m p l e   5  
 //
 //        Toggle default pin 13 every half second
-//        Toggle pin 12 every 90 seconds
+//        Toggle pin 12 every minute
 //        Call user defined function once after 90 seconds
 //        Call user defined function every 5 minutes
 //
@@ -18,23 +18,18 @@
 // Include the HearBeat class library
 #include <ArnoTek_HeartBeat.h>
 
-// Declare function definition
-void My90SecFunction(long unsigned myCurrentTime);
-void My5MinFunction(long unsigned myCurrentTime);
-
-
 
 // Instantiate an object for toggling pin 13 every half a second
-ArnoTek_HeartBeat HeartBeat(static_cast<long unsigned>(500));
+ArnoTek_HeartBeat HeartBeat;
 
 // Instantiate an object for toggling pin 12 every minute
-ArnoTek_HeartBeat Pin12_signal(static_cast<long unsigned>(60000), 12); 
+ArnoTek_HeartBeat Pin12_signal((long unsigned)60000, 12); 
 
 // Instantiate an object for calling user defined function every 90 seconds
-ArnoTek_HeartBeat Seconds90(static_cast<long unsigned>(90000), &My90SecFunction);
+ArnoTek_HeartBeat Seconds90((long unsigned)90000, 0, &My90SecFunction);
 
 // Instantiate an object for calling user defined function every 5 minutes
-ArnoTek_HeartBeat Minutes5(static_cast<long unsigned>(300000), &My5MinFunction);
+ArnoTek_HeartBeat Minutes5((long unsigned)300000, 0, &My5MinFunction);
 
 
 
@@ -64,17 +59,17 @@ void loop()
 
 //                  * * *   C a l l b a c k   F u n c t i o n s   * * *
 
-void My90SecFunction(long unsigned myCurrentTime)
+void My90SecFunction(ArnoTek_HeartBeat *myObject, long unsigned myCurrentTime)
 {
   Serial.print("My90SecFunction entered - current timer value: ");
   Serial.println(myCurrentTime);
 
-  Seconds90.Callback(nullptr); 	  // Disable callback
-  Seconds90.Delay(4294967000);	  // Set the timer delay to a very high number
+  myObject->Callback(nullptr); 	  // Disable callback
+  myObject->Delay(4294967000);	  // Set the timer delay to a very high number
 
 }
 
-void My5MinFunction(long unsigned myCurrentTime)
+void My5MinFunction(ArnoTek_HeartBeat *myObject, long unsigned myCurrentTime)
 {
   Serial.print("\tMy5MinFunction entered - current timer value: ");
   Serial.println(myCurrentTime);

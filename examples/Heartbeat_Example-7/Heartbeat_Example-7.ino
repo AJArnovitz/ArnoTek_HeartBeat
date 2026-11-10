@@ -20,22 +20,11 @@
 // Include the HearBeat class library
 #include <ArnoTek_HeartBeat.h>
 
-// Declare function definition
-void My90SecFunction(long unsigned myCurrentTime);
-void My5MinFunction(long unsigned myCurrentTime);
 
-
-
-// Instantiate an object for toggling pin 13 every half a second
+// Instantiate the HeartBeat objects (initialize them later in the setup function)
 ArnoTek_HeartBeat HeartBeat;
-
-// Instantiate an object for toggling pin 12 every minute
 ArnoTek_HeartBeat Pin12_signal; 
-
-// Instantiate an object for calling user defined function every 90 seconds
 ArnoTek_HeartBeat Seconds90;
-
-// Instantiate an object for calling user defined function every 5 minutes
 ArnoTek_HeartBeat Minutes5;
 
 
@@ -52,16 +41,16 @@ void setup()
 
 
   // Initialize the object for toggling pin 13 every half a second
-  HeartBeat.Init(initialTimer, static_cast<long unsigned>(500));
+  HeartBeat.Init(initialTimer, (long unsigned)500);
 
   // Initialize the object for toggling pin 12 every minute
-  Pin12_signal.Init(initialTimer, static_cast<long unsigned>(60000), 12); 
+  Pin12_signal.Init(initialTimer, (long unsigned)60000, 12); 
 
   // Initialize the object for calling user defined function every 90 seconds
-  Seconds90.Init(initialTimer, static_cast<long unsigned>(90000), &My90SecFunction);
+  Seconds90.Init(initialTimer, (long unsigned)90000, 0, &My90SecFunction);
 
   // Initialize the object for calling user defined function every 5 minutes
-  Minutes5.Init(initialTimer, static_cast<long unsigned>(300000), &My5MinFunction);
+  Minutes5.Init(initialTimer, (long unsigned)300000, 0, &My5MinFunction);
 
 
   Serial.println("*** Setup complete ***\n");
@@ -83,17 +72,17 @@ void loop()
 
 //                  * * *   C a l l b a c k   F u n c t i o n s   * * *
 
-void My90SecFunction(long unsigned myCurrentTime)
+void My90SecFunction(ArnoTek_HeartBeat *myObject, long unsigned myCurrentTime)
 {
   Serial.print("My90SecFunction entered - current timer value: ");
   Serial.println(myCurrentTime);
 
-  Seconds90.Callback(nullptr); 	  // Disable callback
-  Seconds90.Delay(4294967000);	  // Set the timer delay to a very high number
+  myObject->Callback(nullptr); 	  // Disable callback
+  myObject->Delay(4294967000);	  // Set the timer delay to a very high number
 
 }
 
-void My5MinFunction(long unsigned myCurrentTime)
+void My5MinFunction(ArnoTek_HeartBeat *myObject, long unsigned myCurrentTime)
 {
   Serial.print("\tMy5MinFunction entered - current timer value: ");
   Serial.println(myCurrentTime);

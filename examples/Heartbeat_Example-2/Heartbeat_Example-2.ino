@@ -3,7 +3,7 @@
 //     A r n o T e k   H e a r t B e a t   E x a m p l e   2  
 //
 //        Toggle default pin 13 every half second
-//        Toggle pin 12 every 90 seconds
+//        Toggle pin 12 every minute
 //
 //------------------------------------------------------------------
 //
@@ -17,11 +17,10 @@
 #include <ArnoTek_HeartBeat.h>
 
 // Instantiate an object for toggling pin 13 every half a second
-ArnoTek_HeartBeat HeartBeat(static_cast<long unsigned>(500)); 
+ArnoTek_HeartBeat HeartBeat; 
 
 // Instantiate an object for toggling pin 12 every minute
-ArnoTek_HeartBeat Pin12_signal(static_cast<long unsigned>(60000), 12); 
-
+ArnoTek_HeartBeat Pin12_signal((long unsigned)60000, 12); 
 
 
 
